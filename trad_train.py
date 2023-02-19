@@ -229,29 +229,6 @@ def train_and_save_best_model(method='baseline',metrics='f1'):
                 development=False)
 
     pass
-# def load_saved_sets(feat):
-#     X_train = hkl.load(f'processed_data/X_train_{feat}.hkl')
-#     X_test = hkl.load(f'processed_data/X_test_{feat}.hkl')
-#     y_train = pickle.load(open(f'processed_data/y_train.hkl','rb'))
-#     y_test = pickle.load(open(f'processed_data/y_test.hkl','rb'))
-#     return X_train,y_train,X_test,y_test 
-
-
-# y = np.clip(y, 1e-8, 1 - 1e-8)   # numerical stability
-# inv_sig_y = np.log(y / (1 - y))  # transform to log-odds-ratio space
-
-# from sklearn.linear_model import LinearRegression
-# lr = LinearRegression()
-# lr.fit(X, inv_sig_y)
-
-
-# # we can input soft labels 
-# def sigmoid(x):
-#     ex = np.exp(x)
-#     return ex/(1-ex)
-
-
-# preds = sigmoid(lr.predict(X_new))
 
 
 if __name__ == '__main__':
