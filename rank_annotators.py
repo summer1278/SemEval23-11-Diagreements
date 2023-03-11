@@ -39,21 +39,21 @@ def collect_annotator_info():
     pass
 
 
-# compute sample weight by averaging AnnRank
-# AnnRnk and AnnCorrect is computed by the annotator info: 
+# compute sample weight by averaging AnnoSoft
+# AnnRnk and AnnoHard is computed by the annotator info: 
 # score, num_correct, num_task
 # score = sum(max(soft_label_0,soft_label_1))
-def compute_AnnRank(score,num_correct):
+def compute_AnnoSoft(score,num_correct):
     if num_correct == 0:
         return 0
-    AnnRank = float(score)/float(num_correct)
-    return AnnRank
+    AnnoSoft = float(score)/float(num_correct)
+    return AnnoSoft
 
-def compute_AnnCorrect(num_correct,num_task):
+def compute_AnnoHard(num_correct,num_task):
     if num_correct == 0:
         return 0
-    AnnCorrect = float(num_correct)/float(num_task)
-    return AnnCorrect
+    AnnoHard = float(num_correct)/float(num_task)
+    return AnnoHard
 
 def add_computed_values(dataset):
     df = pd.read_csv('annotator_res/'+dataset+'annotator_score.csv',
@@ -61,18 +61,18 @@ def add_computed_values(dataset):
     anno_dict = df.to_dict()
     # print(anno_dict)
     for anno in anno_dict.keys():
-        anno_rank = compute_AnnRank(anno_dict[anno]['score'],
+        anno_soft = compute_AnnoSoft(anno_dict[anno]['score'],
             anno_dict[anno]['correct'])
-        anno_correct = compute_AnnCorrect(anno_dict[anno]['correct'],
+        anno_hard = compute_AnnoHard(anno_dict[anno]['correct'],
             anno_dict[anno]['num_task'])
-        anno_dict[anno]['anno_rank']=anno_rank
-        anno_dict[anno]['anno_correct'] = anno_correct
+        anno_dict[anno]['anno_soft']=anno_soft
+        anno_dict[anno]['anno_hard'] = anno_hard
     df = pd.DataFrame(anno_dict)
     print(dataset,df)
     df.to_csv('annotator_res/'+dataset+'annotator_score.csv')
     pass
 
-def compute_sample_weight(dataset='', weight_method = 'anno_rank'):
+def compute_sample_weight(dataset='', weight_method = 'anno_soft'):
     data_path = f'data/{dataset}'
     df_train = pd.read_csv(data_path+'_train.csv')
     anno_list = df_train.annotators.to_list()
@@ -96,7 +96,7 @@ def compute_sample_weight(dataset='', weight_method = 'anno_rank'):
 if __name__ == '__main__':
     for current_dataset in ['ArMIS','MD-Agreement','ConvAbuse', 'HS-Brexit']:
     #     add_computed_values(current_dataset)
-        # weight_method = 'anno_rank'
-        weight_method = 'anno_correct'
+        # weight_method = 'anno_soft'
+        weight_method = 'anno_hard'
         compute_sample_weight(dataset=current_dataset,
             weight_method=weight_method)

@@ -39,7 +39,7 @@ from collect_info import collect_best
 
 def choose_clf(clf='MLP'):
     models = {
-    'SVM':SGDClassifier(max_iter=1000, tol=1e-3),
+    'SVM':make_pipeline(StandardScaler(), SGDClassifier(max_iter=1000, tol=1e-3)),
     'MLP':MLPClassifier(alpha=0.01, batch_size=256, 
         epsilon=1e-08, hidden_layer_sizes=(300,), 
         learning_rate='adaptive', max_iter=500),
@@ -115,6 +115,20 @@ def prepare_train_and_test(dataset='',feat='tfidf',resampling='',
     else:
         print("option not validated in the system")
 
+    if resampling =='+over':
+        sampler = SMOTE(random_state=0,n_jobs=-1)
+    elif resampling == '+under':
+        sampler = NearMiss(n_jobs=-1)
+        # sampler = RandomUnderSampler(random_state=42)
+        # sampler = ClusterCentroids(n_jobs=-1,random_state=42)
+        # sampler = TomekLinks(ratio='not minority',n_jobs=-1)
+    elif resampling == '+comb':
+        #perform over-sampling using SMOTE and cleaning using Tomek links.
+        sampler = SMOTETomek(sampling_strategy='auto',random_state=0)
+    
+    if resampling !='':
+        X_train,y_train = sampler.fit_resample(X_train,y_train)
+
     
     return X_train, y_train, X_test, y_test
 
@@ -183,8 +197,8 @@ def find_best_model(method='baseline'):
                 sample_weight,_ = train_test_split(sample_weight, 
                 test_size= 0.3, random_state=42)
                 test_models = ['GaussianNB','BernoulliNB','LR',
-                'RandomForest','ExtraTrees',"SVM"]
-                # MLP,KNN don't have sample weight
+                'RandomForest','ExtraTrees']
+                # MLP,SVM,KNN don't have sample weight
 
             results = []
             for test_model in test_models:
@@ -229,14 +243,37 @@ def train_and_save_best_model(method='baseline',metrics='f1'):
                 development=False)
 
     pass
+# def load_saved_sets(feat):
+#     X_train = hkl.load(f'processed_data/X_train_{feat}.hkl')
+#     X_test = hkl.load(f'processed_data/X_test_{feat}.hkl')
+#     y_train = pickle.load(open(f'processed_data/y_train.hkl','rb'))
+#     y_test = pickle.load(open(f'processed_data/y_test.hkl','rb'))
+#     return X_train,y_train,X_test,y_test 
+
+
+# y = np.clip(y, 1e-8, 1 - 1e-8)   # numerical stability
+# inv_sig_y = np.log(y / (1 - y))  # transform to log-odds-ratio space
+
+# from sklearn.linear_model import LinearRegression
+# lr = LinearRegression()
+# lr.fit(X, inv_sig_y)
+
+
+# # we can input soft labels 
+# def sigmoid(x):
+#     ex = np.exp(x)
+#     return ex/(1-ex)
+
+
+# preds = sigmoid(lr.predict(X_new))
 
 
 if __name__ == '__main__':
     # find_best_model()
-    #let's add AnnRank
-    # find_best_model(method='anno_rank')
-    # find_best_model(method='anno_correct')
+    #let's add AnnoSoft
+    # find_best_model(method='anno_soft')
+    # find_best_model(method='anno_hard')
     # collect_best()
     train_and_save_best_model()
-    train_and_save_best_model(method='anno_rank')
-    train_and_save_best_model(method='anno_correct')
+    train_and_save_best_model(method='anno_soft')
+    train_and_save_best_model(method='anno_hard')

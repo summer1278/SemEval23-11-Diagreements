@@ -98,8 +98,8 @@ def collect_method_results(current_dataset='',method='baseline',
 def collect_best():
   for current_dataset in ['ArMIS','MD-Agreement','ConvAbuse', 'HS-Brexit']:
     collect_method_results(current_dataset=current_dataset,method='baseline')
-    collect_method_results(current_dataset=current_dataset,method='anno_rank')
-    collect_method_results(current_dataset=current_dataset,method='anno_correct')
+    collect_method_results(current_dataset=current_dataset,method='anno_soft')
+    collect_method_results(current_dataset=current_dataset,method='anno_hard')
   pass
   pass
 

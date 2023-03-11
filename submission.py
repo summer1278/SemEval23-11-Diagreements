@@ -81,7 +81,7 @@ def f1_metric(solution, prediction):
 
 
 def dev_submission():
-    methods = ['baseline','anno_rank','anno_correct']
+    methods = ['baseline','anno_soft','anno_hard']
     for current_dataset in ['ArMIS','MD-Agreement','ConvAbuse', 'HS-Brexit']:  
         hard_scores=[]
         soft_scores=[]
