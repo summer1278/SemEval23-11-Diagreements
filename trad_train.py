@@ -26,13 +26,8 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from numpy import genfromtxt
 from sklearn.preprocessing import StandardScaler 
 from sklearn.preprocessing import LabelEncoder
-from imblearn.pipeline import make_pipeline
 # feature extraction / vectorization
 from sklearn.feature_extraction.text import TfidfVectorizer
-
-from imblearn.over_sampling import SMOTE
-from imblearn.under_sampling import NearMiss,ClusterCentroids,RandomUnderSampler,TomekLinks
-from imblearn.combine import SMOTETomek
 from collections import Counter
 from collect_info import collect_best
 
