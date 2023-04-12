@@ -26,6 +26,7 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from numpy import genfromtxt
 from sklearn.preprocessing import StandardScaler 
 from sklearn.preprocessing import LabelEncoder
+from sklearn.pipeline import make_pipeline
 # feature extraction / vectorization
 from sklearn.feature_extraction.text import TfidfVectorizer
 from collections import Counter
